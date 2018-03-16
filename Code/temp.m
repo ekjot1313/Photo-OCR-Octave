@@ -1,13 +1,18 @@
 
-i=imread('E:\Photo OCR\Project\Code\Sample Images\abcd.jpg'); % reads given image in rgb form
-save sample5.txt i;
+i=imread('E:\Photo OCR\Project\Code\Sample Images\aa.jpg'); % reads given image in rgb form
+
 gi=rgb2gray(i); % convert rgb image into grayscale
 
+%preprocessing image before recognition
+gi=imagePreprocessing(gi);
 
 [ei t]=edge(gi,'canny'); % generate canny edged image, t is threshold
 name='t=[ ';
 name=[ 'canny= ' name num2str(t) '].jpg']; %generate a name for image
 %imwrite(ei,name); % write the canny image
+
+
+
 
 eig = uint8(255 * ei); % canny img is binary(1,0), this convert it into gray bcz imgrad need gray
 

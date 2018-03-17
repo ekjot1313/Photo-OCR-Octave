@@ -1,11 +1,15 @@
 
 
-i=imread('E:\Photo OCR\Project\Code\Sample Images\a.jpg');
+i=imread('E:\Photo OCR\Project\Code\Sample Images\swt.jpg');
 
 gi=rgb2gray(i);
 
+
+
 %calculating Canny edge image
 [ei t]=edge(gi,'canny');
+
+imshow(ei);
 
  %cc = bwconncomp (ei);
 %mserStats = regionprops(cc,'all');
@@ -51,14 +55,10 @@ Point=struct('x',-1,'y',-1,'swt',inf);
 Ray=struct('p',Point,'q',Point,'pointVect',Point);
 
 
-dark_on_light=0;
+
 PI=22/7;
 %
 
-
-raysVect=Ray;
-rV=0;
-Txt={};
 
 a=zeros(rows,cols);
 b=zeros(rows,cols);
@@ -67,13 +67,25 @@ ci=ei.*0.01;
 K=1;
 
 
+
+
+
+for dark_on_light=0:1
 eeei=ones(size(eei)).*inf;
+
+rayPushBackVar=1;
+rayVect=Ray;
+
+
+
+
+
 for row=1:rows
     for col=1:cols
 
         if(eei(row,col)~=0)
 p='pixel found';
-            pushBackVar=1;
+            pixPushBackVar=1;
 
 K=0;
 
@@ -87,8 +99,8 @@ K=0;
 
             points=Point;
 
-            points(pushBackVar)=p;
-            pushBackVar=pushBackVar+1;
+            points(pixPushBackVar)=p;
+            pixPushBackVar=pixPushBackVar+1;
 
 
             curX = row + 0.5;
@@ -147,8 +159,8 @@ ci(curPixX,curPixY)=5/(rows*cols);
                     pnew.x = curPixX;
                     pnew.y = curPixY;
 
-                    points(pushBackVar)=pnew;
-                    pushBackVar=pushBackVar+1;
+                    points(pixPushBackVar)=pnew;
+                    pixPushBackVar=pixPushBackVar+1;
 
                     if (eei(curPixX, curPixY) > 0)
 
@@ -188,11 +200,21 @@ ci(curPixX,curPixY)=5/(rows*cols);
 
                                 if (eeei(points(pit).x, points(pit).y) == inf)
                                     eeei(points(pit).x, points(pit).y) = len;
+                                    points(pit).swt=len;
                                 else
-                                    eeei(points(pit).x, points(pit).y) = min(len, eeei(points(pit).x, points(pit).y));
+                                    len=min(len, eeei(points(pit).x, points(pit).y));
+                                    eeei(points(pit).x, points(pit).y) = len;
+                                    points(pit).swt=len;
+
                                 endif
 
                             endfor
+
+
+                             r.pointVect = points;
+                             
+                                rayVect(rayPushBackVar)=r;
+                                rayPushBackVar=rayPushBackVar+1;
 
                         endif
 
@@ -228,4 +250,22 @@ ci(curPixX,curPixY)=5/(rows*cols);
 
 endfor
 figure;
+eeei(~isfinite(eeei))=0;
 imagesc(eeei);
+
+strokeWidthMetric = std(eeei)/mean(eeei)
+
+eeei=mySWTMedianFilter(rayVect,eeei);
+
+figure;
+eeei(~isfinite(eeei))=0;
+imagesc(eeei);
+
+
+%break;
+
+%eeei(~isfinite(eeei))=0;
+
+strokeWidthMetric = std(eeei)/mean(eeei)
+
+endfor

@@ -265,20 +265,20 @@ figure;imagesc(eeei);
 
 strokeWidthMetric = std(eeei)/mean(eeei)
 
-eeei=mySWTMedianFilter(rayVect,eeei);
 
+%Doing Median Filter acc to paper
+eeei=mySWTMedianFilter(rayVect,eeei);
 
 eeei(~isfinite(eeei))=0;
 figure;
 imagesc(eeei);
 
 
-
 strokeWidthMetric = std(eeei)/mean(eeei)
 
 
 
-
+swtConnComp(eei);
 
 
 

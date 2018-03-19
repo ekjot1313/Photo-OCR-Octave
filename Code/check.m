@@ -1,271 +1,201 @@
+%I=imread('E:\Photo OCR\Project\Code\Sample Images\jonga.jpg'); % reads given image in rgb form
 
+%I=rgb2gray(I);
 
-i=imread('E:\Photo OCR\Project\Code\Sample Images\swt.jpg');
+I=a=[1 0 0; 0 1 1; 1 0 0];
+[Rows Cols]=size(I);
+%I=[1 1 0 0 0;0 0 0 0 1;0 0 1 0 0 ;1 0 0 0 1 ;1 0 0 1 0];
+%I=[1 0 1; 0 1 0];
 
-gi=rgb2gray(i);
-
-
-
-%calculating Canny edge image
-[ei t]=edge(gi,'canny');
-
-imshow(ei);
-
- %cc = bwconncomp (ei);
-%mserStats = regionprops(cc,'all');
-
-%for j = 1:numel(mserStats)
-  %  figure;imshow(mserStats(j).Image);
-%endfor
-
-
-eei=ei;
-eig= uint8( ei);
-
-%eei=zeros(11,7);
-%eei(3:9,3:5)=1;
-
-
-%calculating gradients of gi
-[GY GX]=imgradientxy(gi);
-
-%[eei t]=edge(eii,'canny');
-
-%eei(4:8,4)=0;
-
-
-%matlab's canny
-%eei=zeros(11,7);
-%eei(4:8,[2 6])=1;
-%eei([3 9],3:5)=1;
-%eei([2 10],4)=1;
-
-
-prec=0.5;
-
-%total rows and columns in gray image
-[rows cols]=size(eei);
-%rows=0;
-%cols=0;
+cc=bwconncomp(I);
+numComp=cc.NumObjects;
 
 %point struct to store a point having 'x','y' and 'SWT value'
 Point=struct('x',-1,'y',-1,'swt',inf);
 
-%ray struct to store 'p-point','q-point' and 'point vector'
-Ray=struct('p',Point,'q',Point,'pointVect',Point);
+PointPair=struct('p',Point,'q',Point);
+
+components=cc.PixelIdxList;
+compCenters=Point;
+compDimensions=Point;
+compBB=PointPair;
+
+for curComp=1:numComp
+
+    componentMat=cell2mat(components(curComp));
+    [mean, variance, median, minx, miny, maxx, maxy]=componentStats(I,componentMat);
 
 
+    % check if variance is less than half the mean
+    if (variance > 0.5 * mean) 
+        continue;
+    endif
 
-PI=22/7;
-%
-
-
-a=zeros(rows,cols);
-b=zeros(rows,cols);
-ci=ei.*0.01;
-%treding through each pixel
-K=1;
+    length = (maxx-minx+1);
+    width = (maxy-miny+1);
 
 
+    % check font height
+    if (width > 300) 
+        continue;
+    endif
 
 
-
-for dark_on_light=0:1
-eeei=ones(size(eei)).*inf;
-
-rayPushBackVar=1;
-rayVect=Ray;
-
+    area = length * width;
+    rminx = minx;
+    rmaxx = maxx;
+    rminy = miny;
+    rmaxy = maxy;
 
 
+    % compute the rotated bounding box
+    increment = 1/36;
+    PI=22/7;
 
 
-for row=1:rows
-    for col=1:cols
+    for theta=increment*PI:increment*PI:PI/2
 
-        if(eei(row,col)~=0)
-p='pixel found';
-            pixPushBackVar=1;
-
-K=0;
-
-            r=Ray;
-
-            p=Point;
-            p.x=row;
-            p.y=col;
-
-            r.p=p;
-
-            points=Point;
-
-            points(pixPushBackVar)=p;
-            pixPushBackVar=pixPushBackVar+1;
+        xmin = inf;
+        ymin = inf;
+        xmax = 0;
+        ymax = 0;
 
 
-            curX = row + 0.5;
-            curY = col + 0.5;
-
-            curPixX = row;
-            curPixY = col;
-
-ci(curPixX,curPixY)=5/(rows*cols);
-
-            G_x = GX(row, col);
-            G_y = GY(row, col);
-
-            % normalize gradient
-            mag = sqrt( (G_x * G_x) + (G_y * G_y) );
-            if(mag==0)
-                mag;
-                 row;
-                  col;
-                   sp=' ';
-                    break;
-                     endif
-
-            if (dark_on_light)
-                G_x = -G_x/mag;
-                G_y = -G_y/mag;
-            else 
-                G_x = G_x/mag;
-                G_y = G_y/mag;
+        for i = 1:size(componentMat)
+            
+            pixInd=componentMat(i);
+            pixX=rem(pixInd,Rows);
+            if(pixX==0)
+                pixX=Rows;
             endif
+            pixY=(pixInd-pixX)/Rows+1;
 
 
-            while(true)
+            xtemp = pixX * cos(theta) + pixY * -sin(theta);
+            ytemp = pixX * sin(theta) + pixY * cos(theta);
+            xmin = min(xtemp,xmin);
+            xmax = max(xtemp,xmax);
+            ymin = min(ytemp,ymin);
+            ymax = max(ytemp,ymax);
+        endfor
 
 
-                curX = curX + G_x*prec;
-                curY = curY + G_y*prec;
-                
-                if (floor(curX) ~= curPixX || floor(curY) ~= curPixY)
-
-                    curPixX = floor(curX);
-                    curPixY = floor(curY);
-
-                    % check if pixel is outside boundary of image
-                    if (curPixX < 1 || (curPixX > rows) || curPixY < 1 || (curPixY > cols))
-                        break;
-                    endif
-
-
-                    ci(curPixX,curPixY)=K/(rows*cols);
-
-                    K=K+1;
-
-
-                    pnew= Point;
-                    pnew.x = curPixX;
-                    pnew.y = curPixY;
-
-                    points(pixPushBackVar)=pnew;
-                    pixPushBackVar=pixPushBackVar+1;
-
-                    if (eei(curPixX, curPixY) > 0)
-
-                        r.q = pnew;
-
-                        % dot product
-                        G_xt = GX(curPixX,curPixY);
-                        G_yt = GY(curPixX,curPixY);
-                            
-                        mag = sqrt( (G_xt * G_xt) + (G_yt * G_yt) );
-                        if(mag==0)
-                mag;
-                 curPixX;
-                  curPixY;
-                   sp=' ';
-                    break;
-                     endif
-
-
-                        if (dark_on_light)
-                            G_xt = -G_xt / mag;
-                            G_yt = -G_yt / mag;
-                        else
-                            G_xt = G_xt / mag;
-                            G_yt = G_yt / mag;
-                        endif
-
-
-
-                        if (acos(G_x * -G_xt + G_y * -G_yt) < PI/2.0 )
-
-                            len = sqrt( (r.q.x - r.p.x)*(r.q.x - r.p.x) + (r.q.y - r.p.y)*(r.q.y - r.p.y));
-
-
-                            for pit=1:size(points,2)
-
-
-                                if (eeei(points(pit).x, points(pit).y) == inf)
-                                    eeei(points(pit).x, points(pit).y) = len;
-                                    points(pit).swt=len;
-                                else
-                                    len=min(len, eeei(points(pit).x, points(pit).y));
-                                    eeei(points(pit).x, points(pit).y) = len;
-                                    points(pit).swt=len;
-
-                                endif
-
-                            endfor
-
-
-                             r.pointVect = points;
-                             
-                                rayVect(rayPushBackVar)=r;
-                                rayPushBackVar=rayPushBackVar+1;
-
-                        endif
-
-
-
-                        break;
-
-                    endif       
-
-
-                endif
-
-
-
-            endwhile
-
-            %figure;
-            %imagesc(ci);title([num2str(row) '  ' num2str(col)]);
-
-            ci=ei.*0.01;
-
-
-
-
-
-
-
+        ltemp = xmax - xmin + 1;
+        wtemp = ymax - ymin + 1;
+        if (ltemp*wtemp < area) 
+            area = ltemp*wtemp;
+            length = ltemp;
+            width = wtemp;
         endif
 
-
-        
     endfor
 
+    % check if the aspect ratio is between 1/10 and 10
+    if (length/width < 1./10. || length/width > 10.)
+        continue;
+    endif
+
+
+    % compute the diameter
+
+    % compute dense representation of component
+    denseRepr={};
+
+    for i = 1: maxx-minx+1
+
+        tmp=zeros(size(maxy-miny+1,1));
+        denseRepr(i)=tmp;
+    endfor
+
+
+    for i = 1:size(componentMat)
+
+        pixInd=componentMat(i);
+        pixX=rem(pixInd,Rows);
+        if(pixX==0)
+            pixX=Rows;
+        endif
+        pixY=(pixInd-pixX)/Rows+1;
+
+        denseRepr(pixX - minx).(pixY - miny) = 1;
+    endfor
+
+
+    center=Point;
+    center.x = ((maxx+minx))/2.0;
+    center.y = ((maxy+miny))/2.0;
+
+    dimensions=Point;
+    dimensions.x = maxx - minx + 1;
+    dimensions.y = maxy - miny + 1;
+
+    bb1=Point;
+    bb1.x = minx;
+    bb1.y = miny;
+
+    bb2=Point;
+    bb2.x = maxx;
+    bb2.y = maxy;
+
+    pair=PointPair;
+    pair.p=bb1;
+    pair.q=bb2;
+
+    compBB(curComp)=(pair);
+    compDimensions(curComp)=(dimensions);
+    compMedians(curComp)=(median);
+    compCenters(curComp)=(center);
+    validComponents(curComp)=componentMat;
+                
+
 endfor
-figure;
-eeei(~isfinite(eeei))=0;
-imagesc(eeei);
-
-strokeWidthMetric = std(eeei)/mean(eeei)
-
-eeei=mySWTMedianFilter(rayVect,eeei);
-
-figure;
-eeei(~isfinite(eeei))=0;
-imagesc(eeei);
 
 
-%break;
 
-%eeei(~isfinite(eeei))=0;
 
-strokeWidthMetric = std(eeei)/mean(eeei)
+pushBack=0;
+
+for curComp = 1:size(validComponents,1)
+    count = 0;
+
+    for j = 1:size(validComponents,1)
+        if (curComp != j)
+            if (compBB(curComp).p.x <= compCenters(j).x && compBB(curComp).q.x >= compCenters(j).x &&
+                compBB(curComp).p.y <= compCenters(j).y && compBB(curComp).q.y >= compCenters(j).y)
+            
+                count++;
+            endif
+        endif
+
+    endfor
+
+
+    if (count < 2)
+        tempComp(pushBack)=validComponents(curComp);
+        tempCenters(pushBack)=compCenters(curComp);
+        tempMed(pushBack)=compMedians(curComp);
+        tempDim(pushBack)=compDimensions(curComp);
+        tempBB(pushBack)=compBB(curComp);
+
+        pushBack=pushBack+1;
+    endif
 
 endfor
+
+
+validComponents = tempComp;
+compDimensions = tempDim;
+compMedians = tempMed;
+compCenters = tempCenters;
+compBB = tempBB
+
+
+
+
+
+
+
+
+
+
+

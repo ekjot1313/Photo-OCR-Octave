@@ -1,5 +1,5 @@
 
-i=imread('E:\Photo OCR\Project\Code\Sample Images\swt.jpg'); % reads given image in rgb form
+i=imread('E:\Photo OCR\Project\Code\Sample Images\eei.jpg'); % reads given image in rgb form
 
 gi=rgb2gray(i); % convert rgb image into grayscale
 

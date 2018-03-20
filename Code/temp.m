@@ -60,26 +60,18 @@ printboxes(bbox,ei);
 endif
 
 %Remove Non-Text Regions Based On Stroke Width Variation coded by me
-[mserRegions mserStats]=mySWT(mserRegions,mserStats,gi);
+bbox=mySWT(mserRegions,mserStats,gi);
 
 %printing bounding boxes around selected regions
-if(size(mserStats,2)>0)
-bbox = vertcat(mserStats.BoundingBox);
+if(size(bbox,1)>0)
 printboxes(bbox,ei);
 endif
 
 
-
-
-
-
-
-
-% Get bounding boxes for all the regions
-bboxes = vertcat(mserStats.BoundingBox);
+bboxes=bbox;
 
 %Merging overlaping bounding boxes
-if(size(mserStats,2)>0)
+if(size(bboxes,1)>0)
 textBBoxes=expandAndMergeBoundBox(bboxes,i);
 
 % Show the final text detection result.

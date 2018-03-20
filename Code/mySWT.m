@@ -1,11 +1,11 @@
 
-function [mserRegions mserStats]= mySWT(mserRegions,mserStats,GI)
+function bbox= mySWT(mserRegions,mserStats,GI)
 
 	
-
+bbox=[];
 strokeWidthThreshold=0;
 	for j = 1:numel(mserStats)
-
+bboxj=[];
 
 gi=imcrop(GI,mserStats(j).BoundingBox);
 %figure;
@@ -274,24 +274,22 @@ figure;
 imagesc(eeei);
 
 
-strokeWidthMetric = std(eeei)/mean(eeei)
+strokeWidthMetric = std(eeei)/mean(eeei);
 
 
 
-swtConnComp(eei);
-
-
-
-
-
-
-%swtConnComp(eeei);
-
+bboxj=[bboxj;swtConnComp(eei)];
 
 
 endfor
+
 strokeWidthMetric;
 strokeWidthFilterIdx(j) = strokeWidthMetric == strokeWidthThreshold;
+
+
+
+bboxj=bboxj+[(mserStats(j).BoundingBox)([1 2]) 0 0];
+bbox=[bbox; bboxj];
 
 endfor
 
@@ -300,9 +298,6 @@ endfor
 
 mserRegions(strokeWidthFilterIdx) = [];
 mserStats(strokeWidthFilterIdx) = [];
-
-
-
 
 
 

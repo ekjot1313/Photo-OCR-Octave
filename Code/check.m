@@ -1,8 +1,11 @@
-%I=imread('E:\Photo OCR\Project\Code\Sample Images\jonga.jpg'); % reads given image in rgb form
+I=imread('E:\Photo OCR\Project\Code\Sample Images\swtoutput.jpg'); % reads given image in rgb form
 
 %I=rgb2gray(I);
 
-I=a=[1 0 0; 0 1 1; 1 0 0];
+%I=a=[1 0 0; 0 1 1; 0 0 0];
+
+
+%I=[1 1 0 0 0;0 0 0 0 1;0 0 1 0 0 ;1 0 0 0 1 ;1 0 0 1 0];
 [Rows Cols]=size(I);
 %I=[1 1 0 0 0;0 0 0 0 1;0 0 1 0 0 ;1 0 0 0 1 ;1 0 0 1 0];
 %I=[1 0 1; 0 1 0];
@@ -19,6 +22,16 @@ components=cc.PixelIdxList;
 compCenters=Point;
 compDimensions=Point;
 compBB=PointPair;
+compMedians=[];
+
+validComponents={};
+
+tempComp={};
+tempBB=PointPair;
+tempCenters=Point;
+tempMed=[];
+tempDim=Point;
+
 
 for curComp=1:numComp
 
@@ -57,8 +70,8 @@ for curComp=1:numComp
 
         xmin = inf;
         ymin = inf;
-        xmax = 0;
-        ymax = 0;
+        xmax = 1;
+        ymax = 1;
 
 
         for i = 1:size(componentMat)
@@ -117,7 +130,10 @@ for curComp=1:numComp
         endif
         pixY=(pixInd-pixX)/Rows+1;
 
-        denseRepr(pixX - minx).(pixY - miny) = 1;
+
+
+        denseRepr(pixX - minx+1,pixY - miny+1) = 1;
+
     endfor
 
 
@@ -145,7 +161,7 @@ for curComp=1:numComp
     compDimensions(curComp)=(dimensions);
     compMedians(curComp)=(median);
     compCenters(curComp)=(center);
-    validComponents(curComp)=componentMat;
+    validComponents(curComp,:)=componentMat;
                 
 
 endfor
@@ -153,10 +169,11 @@ endfor
 
 
 
-pushBack=0;
+pushBack=1;
 
 for curComp = 1:size(validComponents,1)
     count = 0;
+
 
     for j = 1:size(validComponents,1)
         if (curComp != j)
@@ -170,12 +187,14 @@ for curComp = 1:size(validComponents,1)
     endfor
 
 
+
     if (count < 2)
-        tempComp(pushBack)=validComponents(curComp);
+        tempComp(pushBack,:)=validComponents(curComp);
         tempCenters(pushBack)=compCenters(curComp);
         tempMed(pushBack)=compMedians(curComp);
         tempDim(pushBack)=compDimensions(curComp);
         tempBB(pushBack)=compBB(curComp);
+
 
         pushBack=pushBack+1;
     endif
@@ -187,15 +206,28 @@ validComponents = tempComp;
 compDimensions = tempDim;
 compMedians = tempMed;
 compCenters = tempCenters;
-compBB = tempBB
+compBB = tempBB;
 
 
+bbox=zeros(size(compBB,2),4);
+
+for i=1:size(compBB,2)
+    x1=compBB(i).p.x;
+    x2=compBB(i).q.x;
+    y1=compBB(i).p.y;
+    y2=compBB(i).q.y;
+    xlen=x2-x1;
+    ylen=y2-y1;
+
+    bbox(i,:)=[y1 x1 y2 x2];
+    
+    endfor
+
+bbox
+
+printboxes(bbox,I);
 
 
-
-
-
-
-
+size(compBB,2)
 
 

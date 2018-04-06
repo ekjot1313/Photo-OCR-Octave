@@ -1,7 +1,11 @@
 
-i=imread('E:\Photo OCR\Project\Code\Sample Images\eei.jpg'); % reads given image in rgb form
+i=imread('E:\Photo OCR\Project\Code\Sample Images\abcd.jpg'); % reads given image in rgb form
 
-gi=rgb2gray(i); % convert rgb image into grayscale
+gi=i;
+if size(i,3)==3 %if image is rgb
+	gi=rgb2gray(i); % convert rgb image into grayscale
+endif
+
 
 %preprocessing image before recognition
 %gi=imagePreprocessing(gi);
@@ -44,7 +48,7 @@ mserRegions=i;
 %printing bounding boxes around selected regions
 if(size(mserStats,2)>0)
 bbox = vertcat(mserStats.BoundingBox);
-printboxes(bbox,ei);
+printboxes(bbox,ei,'After removeOnGeometry');
 endif
 
 
@@ -56,24 +60,35 @@ endif
 %printing bounding boxes around selected regions
 if(size(mserStats,2)>0)
 bbox = vertcat(mserStats.BoundingBox);
-printboxes(bbox,ei);
+printboxes(bbox,ei,'After removeOnSWV');
+	bbox=expandAndMergeBoundBox(bbox,i,0);
+printboxes(bbox,ei,'After removeOnSWV + expandAndMergeBoundBox with 0 expansion');
 endif
+bbox;
+
 
 %Remove Non-Text Regions Based On Stroke Width Variation coded by me
-bbox=mySWT(mserRegions,mserStats,gi);
-
+bboxNum=size(bbox,1);
+if(bboxNum>0)
+	bboxswt=[];
+	for bboxnum=1:bboxNum
+		bounds=bbox(bboxnum,:)-[0 0 1 1]; %subtracting length and height to crop accurately
+		bboxswt=[bboxswt;mySWT(imcrop(gi,bounds),bounds)];
+	endfor
+endif
+bboxswt;
 %printing bounding boxes around selected regions
-if(size(bbox,1)>0)
-printboxes(bbox,ei);
+if(size(bboxswt,1)>0)
+printboxes(bboxswt,ei,'final image after swt');
 endif
 
 
-bboxes=bbox;
+bboxes=bboxswt;
 
 %Merging overlaping bounding boxes
 if(size(bboxes,1)>0)
-textBBoxes=expandAndMergeBoundBox(bboxes,i);
+textBBoxes=expandAndMergeBoundBox(bboxes,i,0.05);%0.05 is expansion ration
 
 % Show the final text detection result.
-printboxes(textBBoxes,gi);
+printboxes(textBBoxes,gi,'final image');
 endif

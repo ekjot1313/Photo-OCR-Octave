@@ -11,8 +11,8 @@ Cols=size(I,2);
         variance = 0;
         minx = inf;
         miny = inf;
-        maxx = 0;
-        maxy = 0;
+        maxx = 1;
+        maxy = 1;
 
         swtMat=[];
 
@@ -24,6 +24,8 @@ Cols=size(I,2);
             endif
             pixY=(pixInd-pixX)/Rows+1;
             
+%[num2str(pixInd) ' -> ' num2str(pixX) ',' num2str(pixY)];
+
 
             swt=I(pixX,pixY);
             swtMat=[swtMat; swt];
@@ -39,12 +41,9 @@ Cols=size(I,2);
 
         mean = mean / numPix;
 
-        for curSwt=1:size(swtMat,1)
-            variance = variance + (swtMat(curSwt) - mean) * (swtMat(curSwt) - mean);
-        endfor
-
-        variance = variance / numPix;
+        variance=sum((swtMat - mean).^2)/ numPix;
 
         swtMat=sort(swtMat);
-        median = swtMat(uint16(size(swtMat,1)/2),1);	
+        median = swtMat(uint16(size(swtMat,1)/2),1);
+
 end

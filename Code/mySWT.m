@@ -1,27 +1,22 @@
 
-function bbox= mySWT(mserRegions,mserStats,GI)
+function bbox= mySWT(GI,Bounds)
 
-	
+	%figure;
+   % imshow(GI);
+   %title('BoundingBox Gray Image before SWT');
+   % printboxes(Bounds,GI,'BoundingBox Gray Image before SWT');
 bbox=[];
 strokeWidthThreshold=0;
-	for j = 1:numel(mserStats)
+
+
 bboxj=[];
-
-gi=imcrop(GI,mserStats(j).BoundingBox);
-%figure;
-%imshow(gi);
-
-%i=imread('E:\Photo OCR\Project\Code\Sample Images\demo.jpg');
-
-%gi=rgb2gray(i);
-
+gi=GI;
 
 
 %calculating Canny edge image
 [ei t]=edge(gi,'canny');
+   %printboxes(Bounds,ei,'BoundingBox edge Image before SWT');
 
-%figure;
-%imshow(ei);
 
  %cc = bwconncomp (ei);
 %mserStats = regionprops(cc,'all');
@@ -88,7 +83,7 @@ strokeWidthMetric=0;
 for dark_on_light=0:1
 
 	
-eeei=ones(size(eei)).*inf;
+eeei=ones(size(eei))*inf;
 
 rayPushBackVar=1;
 rayVect=Ray;
@@ -259,46 +254,44 @@ ci(curPixX,curPixY)=5/(rows*cols);
 
 endfor
 eeei(~isfinite(eeei))=0;
-figure;imagesc(eeei);
+%figure;imagesc(eeei);
+%title('SWT image');
+
+
 
 %eeei(~isfinite(eeei))=0;
 
-strokeWidthMetric = std(eeei)/mean(eeei)
+strokeWidthMetric = std((eeei))/(mean(eeei))
 
-
+if(strokeWidthMetric==0||strokeWidthMetric>1.5)
+    continue;
+endif
 %Doing Median Filter acc to paper
 eeei=mySWTMedianFilter(rayVect,eeei);
 
 eeei(~isfinite(eeei))=0;
-figure;
-imagesc(eeei);
+%figure;
+%imagesc(eeei);
+%title('SWT image after mySWTMedianFilter');
+
+strokeWidthMetric = std(std(eeei))/mean(mean(eeei))%std(eeei)/mean(eeei);
+deviation=std(std(eeei));
+
+if(strokeWidthMetric==0||strokeWidthMetric>1.5)
+    continue;
+endif
 
 
-strokeWidthMetric = std(eeei)/mean(eeei);
-
-
-
-bboxj=[bboxj;swtConnComp(eei)];
+bboxj=[bboxj;swtConnComp(eeei)];
 
 
 endfor
 
-strokeWidthMetric;
-strokeWidthFilterIdx(j) = strokeWidthMetric == strokeWidthThreshold;
 
-
-
-bboxj=bboxj+[(mserStats(j).BoundingBox)([1 2]) 0 0];
+if(size(bboxj,1)>0)
+%(mserStats(j).BoundingBox)([1 2])
+bboxj=bboxj+[Bounds([1 2]) 0 0];
 bbox=[bbox; bboxj];
-
-endfor
-
-
-% Remove regions based on the stroke width variation
-
-mserRegions(strokeWidthFilterIdx) = [];
-mserStats(strokeWidthFilterIdx) = [];
-
-
+endif
 
 end

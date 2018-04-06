@@ -1,4 +1,4 @@
-function textBBoxes=expandAndMergeBoundBox(bboxes,i)
+function textBBoxes=expandAndMergeBoundBox(bboxes,i,ExpRatio)
 
 
 % Convert from the [x y width height] bounding box format to the [xmin ymin
@@ -10,11 +10,19 @@ ymax = ymin + bboxes(:,4) - 1;
 
 
 % Expand the bounding boxes by a small amount.
-expansionAmount = 0.05;
-xmin = (1-expansionAmount) * xmin;
-ymin = (1-expansionAmount) * ymin;
-xmax = (1+expansionAmount) * xmax;
-ymax = (1+expansionAmount) * ymax;
+expansionAmountX = ExpRatio*bboxes(:,3);
+expansionAmountY = ExpRatio*bboxes(:,4);
+
+%xmin = (1-expansionAmount) * xmin;
+%ymin = (1-expansionAmount) * ymin;
+%xmax = (1+expansionAmount) * xmax;
+%ymax = (1+expansionAmount) * ymax;
+
+xmin = xmin - expansionAmountX;
+ymin = ymin - 1.1*expansionAmountY;%more to include dots on i and j
+xmax = xmax + expansionAmountX;
+ymax = ymax + expansionAmountY;
+
 
 
 % Clip the bounding boxes to be within the image bounds

@@ -1,7 +1,7 @@
-function printboxes(bbox,i)
+function printboxes(bbox,i,Title)
 figure
 imshow(i)
-
+title(Title);
 
 if(size(bbox,1)>0)
 % Convert from the [x y width height] bounding box format to the [xmin ymin

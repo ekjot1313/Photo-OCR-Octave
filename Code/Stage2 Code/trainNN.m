@@ -1,17 +1,27 @@
-function trainNN(input_layer_size, ...
-                                   hidden_layer_size, ...
-                                   num_labels, ...
-                                   X, y, lambda, MaxIter)
+function trainNN
+
 %trainNN function trains the Neural Network to obtain weights for hidden layer
 %and output layer and save them into 'weights.mat' file as theta1 and theta2
 
-%MaxIter=50;
-%lambda=0;
+input_layer_size=400;
+hidden_layer_size=100;
+num_labels=62;
+MaxIter=100;
+lambda=0;
+
+
+
+load('train_test_Data.mat'); %loading training cases
+
+X=X_trn;
+y=y_trn;
+
 %random initialization of weights/parameters/thetas
 Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size);
 Theta2 = randInitializeWeights(hidden_layer_size, num_labels);
 
 nn_params = [Theta1(:) ; Theta2(:)];%unrolling thetas into neural network parameters
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -42,5 +52,8 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 fprintf('Program paused. Press enter to continue.\n');
 pause;
 
-predAfterTraining = predict(Theta1, Theta2, X);
+save('thetas.mat','Theta1','Theta2');
+%predAfterTraining = predict(Theta1, Theta2, X);
+
+%testNN;
 end

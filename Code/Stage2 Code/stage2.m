@@ -6,8 +6,7 @@ function stage2
 	i=imageto20X20gray(i);
 
 	X=i(:)';
-y=zeros(26,1);
-y(10,1)=1;
+y=[10];% y is let to be 10
 
 
 %% Setup the parameters we will use for this neural network
@@ -24,28 +23,11 @@ num_labels = 26;          % 26 labels, from A to Z
 X=2*mat2gray(X)-1; %to get gray pixel intensity in range -1 to 1
                    %where -1 is black and 1 is white
 
-%load('ex3weights.mat'); %loading pre-calculated thetas
-
-%random initialization of weights/parameters/thetas
-Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size);
-Theta2 = randInitializeWeights(hidden_layer_size, num_labels);
-
-nn_params = [Theta1(:) ; Theta2(:)];%unrolling thetas into neural network parameters
-
-% Weight regularization parameter (we set this to 0 here).
-lambda = 0;
+%load('weights.mat'); %loading pre-calculated thetas
 
 
-pred = predict(Theta1, Theta2, X)%predicting the images
-
-[J grad] = nnCostFunction(nn_params, input_layer_size, hidden_layer_size, ...
-                   num_labels, X, y, lambda)
+%trainNN(input_layer_size,hidden_layer_size,num_labels,X,y,0,50);
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%done upto cost. now implement back propagation
-
-
- 
 
 end

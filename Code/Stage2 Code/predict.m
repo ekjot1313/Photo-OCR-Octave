@@ -30,7 +30,7 @@ a2=[ones(m,1) a2]; %adding bias units to hidden layer activation values
 a3=sigmoid(a2*Theta2'); %finding output layer activation values of all images
 
 [m,prediction]=max(a3'); %finding index of the predicted label
-prediction=char(prediction+64); %converting index to ascii character; 64+1=A
+%prediction=char(prediction+64); %converting index to ascii character; 64+1=A
 p=prediction';
 
 

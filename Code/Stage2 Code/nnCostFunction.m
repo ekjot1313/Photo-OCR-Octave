@@ -90,7 +90,7 @@ for i=1:m
 	ynew(i,:)=ytemp;
 endfor;
 
- 
+
 
 J=(1/m)*sum(sum((-ynew.*log(h))-((1-ynew).*log(1-h))));
 

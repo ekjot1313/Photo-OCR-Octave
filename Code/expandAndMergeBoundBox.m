@@ -1,4 +1,4 @@
-function textBBoxes=expandAndMergeBoundBox(bboxes,i,ExpRatio)
+function textBBoxes=expandAndMergeBoundBox(bboxes,i,ExpRatioX,ExpRatioY)
 
 
 % Convert from the [x y width height] bounding box format to the [xmin ymin
@@ -10,8 +10,9 @@ ymax = ymin + bboxes(:,4) - 1;
 
 
 % Expand the bounding boxes by a small amount.
-expansionAmountX = ExpRatio*bboxes(:,3);
-expansionAmountY = ExpRatio*bboxes(:,4);
+expansionAmountX = ExpRatioX*bboxes(:,3);%max text is horizontal 
+                                            %so expanding sideways more
+expansionAmountY = ExpRatioY*bboxes(:,4);
 
 %xmin = (1-expansionAmount) * xmin;
 %ymin = (1-expansionAmount) * ymin;
@@ -19,7 +20,7 @@ expansionAmountY = ExpRatio*bboxes(:,4);
 %ymax = (1+expansionAmount) * ymax;
 
 xmin = xmin - expansionAmountX;
-ymin = ymin - 1.1*expansionAmountY;%more to include dots on i and j
+ymin = ymin - expansionAmountY;
 xmax = xmax + expansionAmountX;
 ymax = ymax + expansionAmountY;
 

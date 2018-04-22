@@ -8,20 +8,26 @@ w = bbox(:,3);
 h = bbox(:,4);
 aspectRatio = w./h;
 boxarea=w.*h;
-
 [L W H]=size(I);
 imagearea=L*W*H;
-%changing it to 0.001 of actual area
+%changing it to 0.0001 of actual area
 imagearea=0.0001*imagearea;
 
 
-aspectRatio;
+filterIdx=find(boxarea==1);
+
+aspectRatio(filterIdx)=[];
+boxarea(filterIdx)=[];
+mserStats(filterIdx) = [];
+mserRegions(filterIdx) = [];
+
+
 
 % Threshold the data to determine which regions to remove. These thresholds
 % may need to be tuned for other images.
 
 filterIdx = boxarea' < imagearea;
-filterIdx = filterIdx | aspectRatio' > 3;
+filterIdx = filterIdx | (aspectRatio' < 0.1  & aspectRatio' > 10);
 filterIdx = filterIdx | [mserStats.Eccentricity] > 0.999 ;
 filterIdx = filterIdx | [mserStats.Solidity] > .65;
 filterIdx = filterIdx | [mserStats.Extent] < 0.01 | [mserStats.Extent] > 0.9;

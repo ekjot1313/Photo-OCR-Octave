@@ -1,10 +1,12 @@
 
-i=imread('E:\Photo OCR\Project\Code\Sample Images\swtf.jpg'); % reads given image in rgb form
+i=imread('E:\Photo OCR\Project\Code\Sample Images\abcd1.jpg'); % reads given image in rgb form
 trim(i);
 gi=i;
 if size(i,3)==3 %if image is rgb
 	gi=rgb2gray(i); % convert rgb image into grayscale
-endif
+elseif islogical(i)%if image is binary
+	i=uint8(i*255);
+endif;
 
 
 %preprocessing image before recognition
@@ -84,11 +86,17 @@ if(bboxNum>0)
 	endfor
 endif
 
+%word boxes are numbered in increasing order of vertical distance only
+%but they may be ordered like actual text.i.e, top to bottom and left to right
+bboxswt=orderBoxPlace(bboxswt,25);
+
+
 %expanding vertically to include dots of i and j and
 %printing bounding boxes around selected regions
 %then sending them for recognition.
 if(size(bboxswt,1)>0)
 	bboxswt=expandAndMergeBoundBox(bboxswt,i,0,0.12);
+
 printboxes(bboxswt,i,'final image after swt');
 link1to2(bboxswt,i);
 

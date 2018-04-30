@@ -1,13 +1,16 @@
+%i=1;
+%j=1000;
+%lambda=i/j;
 lambda=0;
 traindata=[];
 validdata=[];
 
 input_layer_size=400;
-hidden_layer_size=110;
+hidden_layer_size=160;
 num_labels=62;
-MaxIter=100;
-trainsetPercentage=25;
-
+MaxIter=50 ;
+trainsetPercentage=10;
+validsetPercentage=10;
 
 
 
@@ -24,33 +27,58 @@ y_trn=y_trn(randInd);
 
 
 load('valid_Data.mat'); %loading test cases
+numOfValidCases=size(y_val,1);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%dec train case and randomize
+randInd2=randperm(numOfValidCases)(randperm(floor(numOfValidCases*(validsetPercentage/100))));
+X_val=X_val(randInd2,:);
+y_val=y_val(randInd2);
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%load('thetas.mat'); 
 
-while lambda<=1000
+%T1 = Theta1;
+%T2 = Theta2;
+T1 = randInitializeWeights(input_layer_size, hidden_layer_size);
+T2 = randInitializeWeights(hidden_layer_size, num_labels);
 
-	J_trn =trainNN(input_layer_size, ...
+while lambda<=11
+
+	[J_trn,t1,t2] =trainNN(input_layer_size, ...
                                    hidden_layer_size, ...
-                                   num_labels,X_trn,y_trn, lambda,MaxIter);
-load('thetas.mat'); %loading new thetas
+                                   num_labels,X_trn,y_trn, lambda,MaxIter,T1,T2);
+%load('thetas.mat'); %loading new thetas
 
-nn_params = [Theta1(:) ; Theta2(:)];%unrolling thetas into neural network parameters
+nn_params = [t1(:) ; t2(:)];%unrolling thetas into neural network parameters
 
 	J_val =nnCostFunction(nn_params, ...
                                    input_layer_size, ...
                                    hidden_layer_size, ...
                                    num_labels, ...
-                                   X_val, y_val, lambda);
+                                   X_val, y_val, lambda)
 traindata=[traindata;[lambda,J_trn]];
 validdata=[validdata;[lambda,J_val]];
 
+
+%lambda=i/j;
+	%if i==9
+	%	j=j/10;
+	%end;
+	%i=rem(i,9)+1;
+
 if lambda==0
-	lambda=1;
+	lambda=0.01;
 else
-lambda=lambda+100;
-endif
+lambda=lambda*2;
+end;
+
+
+
 
 endwhile
+
+
+
 
 traindata
 

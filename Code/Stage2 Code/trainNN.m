@@ -43,6 +43,7 @@ nn_params = [Theta1(:) ; Theta2(:)];%unrolling thetas into neural network parame
 
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fprintf('\nTraining Neural Network... \n')
 

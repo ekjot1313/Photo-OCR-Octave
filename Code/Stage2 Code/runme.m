@@ -1,12 +1,12 @@
-lambda=3;%10-15
+lambda=0;%10-15
 traindata=[];
 validdata=[];
 
 input_layer_size=400;
-hidden_layer_size=110;
+hidden_layer_size=160;
 num_labels=62;
-MaxIter=1000;
-trainsetPercentage=100;
+MaxIter=50;
+trainsetPercentage=50;
 
 %1 5.3 5.3     22   0
 %4.3 4.6 4.6   26    13
@@ -23,18 +23,27 @@ trainsetPercentage=100;
 %2.1 5.1 5.1   62   4.5  1000itr 100%
 %1.8 5.2 5.1   59   3    1000itr 100%
 
+
+%%%%%%%%%%A-Z only
+%1.7 2.3 2.3   53   3   100itr  100%
+%0.6 2.1 2.1   47   1   100itr  100%
+%0.14 0.57 0.56 71  0.32 500itr 140%
+
 load('train_Data.mat'); %loading training cases
 load('valid_Data.mat'); %loading test cases
+load('test_Data.mat');
 
+%X_trn=[X_trn;X_val;X_tst];
+%y_trn=[y_trn;y_val;y_tst];
 
 
 numOfTrainCases=size(y_trn,1);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%dec train case and randomize
-%randInd=randperm(numOfTrainCases)(randperm(floor(numOfTrainCases*(trainsetPercentage/100))));
-%X_trn=X_trn(randInd,:);
-%y_trn=y_trn(randInd);
+randInd=randperm(numOfTrainCases)(randperm(floor(numOfTrainCases*(trainsetPercentage/100))));
+X_trn=X_trn(randInd,:);
+y_trn=y_trn(randInd);
 m=size(y_trn,1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -55,7 +64,7 @@ y_trn_new=y_trn;
 	[J_trn Theta1 Theta2] =trainNN(input_layer_size, ...
                                    hidden_layer_size, ...
                                    num_labels,X_trn_new,y_trn_new, lambda,MaxIter,Theta1,Theta2);
-J_trn
+
 %endfor
 
 save('thetas.mat','Theta1','Theta2');%saving new thetas

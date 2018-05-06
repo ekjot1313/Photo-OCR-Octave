@@ -14,3 +14,13 @@ Later, I found a snippet on 'https://in.mathworks.com/help/vision/examples/autom
 In recognising stage, I used Neural Network to detect text from first stage. It's structure was, Input Layer: 400 units, One Hidden Layer: 160 units, Output Layer: 62 units. It was trained on training dataset from char74k.
 
 My OCR is working fine but also have some constraints. Currently, I am working to increase its accuracy and to make it robust.
+
+![ocr1](https://user-images.githubusercontent.com/24753395/39675879-d8236a12-517e-11e8-824f-9a2fd414173a.png)
+![ocr2](https://user-images.githubusercontent.com/24753395/39675884-df518d78-517e-11e8-8d36-89c6d5cd569b.png)
+![ocr3](https://user-images.githubusercontent.com/24753395/39675886-e2866cac-517e-11e8-9136-6f1c097438fd.png)
+![ocr4](https://user-images.githubusercontent.com/24753395/39675887-e5953c7a-517e-11e8-9399-333260fc93c2.png)
+![ocr5](https://user-images.githubusercontent.com/24753395/39675888-e9cbb4d6-517e-11e8-9433-a478914d47dd.png)
+![ocr6](https://user-images.githubusercontent.com/24753395/39675893-ee387342-517e-11e8-8f7a-3ef896745eb9.png)
+![ocr7](https://user-images.githubusercontent.com/24753395/39675895-f11c545c-517e-11e8-8a35-e73248ee9b57.png)
+![ocr8](https://user-images.githubusercontent.com/24753395/39675899-f3b9779e-517e-11e8-8e8b-4acd6a09579d.png)
+

@@ -1,12 +1,12 @@
-lambda=0.32;
+lambda=0.08;
 traindata=[];
 validdata=[];
 
 input_layer_size=400;
-hidden_layer_size=100;
-num_labels=26;
-MaxIter=100;
-trainsetPercentage=1;
+hidden_layer_size=160;
+num_labels=62;
+MaxIter=50;
+trainsetPercentage=10;
 
 
 
@@ -27,7 +27,7 @@ numOfTrainCases=size(y_trn,1);
 T1 = randInitializeWeights(input_layer_size, hidden_layer_size);
 T2 = randInitializeWeights(hidden_layer_size, num_labels);
 
-while trainsetPercentage<=100
+while trainsetPercentage<=60
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%dec train case and randomize
 randInd=randperm(numOfTrainCases)(randperm(floor(numOfTrainCases*(trainsetPercentage/100))));
 X_trn_new=X_trn(randInd,:);
@@ -51,11 +51,11 @@ nn_params = [t1(:) ; t2(:)];%unrolling thetas into neural network parameters
 traindata=[traindata;[m,J_trn]];
 validdata=[validdata;[m,J_val]];
 
-if trainsetPercentage==1
-	trainsetPercentage=10;
+if trainsetPercentage==10
+	trainsetPercentage=20;
 	continue;
 end;
-trainsetPercentage=trainsetPercentage+10;
+trainsetPercentage=trainsetPercentage+20;
 
 
 endwhile

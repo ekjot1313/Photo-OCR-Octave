@@ -1,12 +1,12 @@
-lambda=0;%10-15
+lambda=1;%10-15
 traindata=[];
 validdata=[];
 
 input_layer_size=400;
 hidden_layer_size=160;
 num_labels=62;
-MaxIter=50;
-trainsetPercentage=50;
+MaxIter=100;
+trainsetPercentage=100;
 
 %1 5.3 5.3     22   0
 %4.3 4.6 4.6   26    13
@@ -33,6 +33,10 @@ load('train_Data.mat'); %loading training cases
 load('valid_Data.mat'); %loading test cases
 load('test_Data.mat');
 
+%load('new_train_Data.mat'); %loading training cases
+%load('new_valid_Data.mat'); %loading test cases
+%load('new_test_Data.mat');
+
 %X_trn=[X_trn;X_val;X_tst];
 %y_trn=[y_trn;y_val;y_tst];
 
@@ -41,10 +45,10 @@ numOfTrainCases=size(y_trn,1);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%dec train case and randomize
-randInd=randperm(numOfTrainCases)(randperm(floor(numOfTrainCases*(trainsetPercentage/100))));
-X_trn=X_trn(randInd,:);
-y_trn=y_trn(randInd);
-m=size(y_trn,1);
+%randInd=randperm(numOfTrainCases)(randperm(floor(numOfTrainCases*(trainsetPercentage/100))));
+%X_trn=X_trn(randInd,:);
+%y_trn=y_trn(randInd);
+%m=size(y_trn,1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 

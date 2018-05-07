@@ -30,8 +30,8 @@ strokeWidthMetric=0;
     	strokeWidthMetric = std(strokeWidthValues)/mean(strokeWidthValues);
     	titl=[num2str(strokeWidthMetric)];
 
-    	if (strokeWidthMetric)<0.1||(strokeWidthMetric)>2
-    		titl=[titl,'rejected'];
+    	if (strokeWidthMetric)<0||(strokeWidthMetric)>2
+            titl=[titl,'rejected'];
     		bbox=[];
     	%figure;
     	%imagesc(skeletonImage);

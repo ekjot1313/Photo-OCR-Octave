@@ -1,6 +1,6 @@
 function bbox=orderBoxPlace(bbox,gintRange)
 
-
+if size(bbox,1)>0
 %bounding boxes are numbered in increasiing order of vertical distance only
 %but they may be ordered like actual text.i.e, top to bottom and left to right
 
@@ -20,4 +20,5 @@ bbox=sortrows(bbox,[5,1]);%boxes are sorted on the number assigned in above
 bbox=bbox(:,1:4);%new column removed
 
 
+end
 end

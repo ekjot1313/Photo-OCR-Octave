@@ -28,7 +28,7 @@ mserRegions(filterIdx) = [];
 
 filterIdx = boxarea' < imagearea;
 filterIdx = filterIdx | (aspectRatio' < 0.1  & aspectRatio' > 10);
-filterIdx = filterIdx | [mserStats.Eccentricity] > 0.999 ;
+filterIdx = filterIdx | [mserStats.Eccentricity] > 1 ;
 filterIdx = filterIdx | [mserStats.Solidity] > .65;
 filterIdx = filterIdx | [mserStats.Extent] < 0.01 | [mserStats.Extent] > 0.9;
 filterIdx = filterIdx | [mserStats.EulerNumber] < -4;

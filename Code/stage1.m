@@ -1,5 +1,17 @@
 
-i=imread('E:\Photo OCR\Project\Code\Sample Images\abcd1.jpg'); % reads given image in rgb form
+% Create push button
+    btn = uicontrol('Style', 'pushbutton', 'String', 'YOYO',...
+        'Position', [0 0 50 20],...
+        'Callback', 'cla');
+fffff
+[imgname, imgpath]=uigetfile ({"*.jpeg,*.png;*.jpg", "Supported Picture Formats"},'Select Image');
+%i=imread('E:\Photo OCR\Project\Code\Sample Images\abcd1.jpg'); % reads given image in rgb form
+i=imread(strcat(imgpath,imgname)); % reads given image in rgb form
+
+imshow(i);
+
+       ffff
+%i=imcomplement(i);
 trim(i);
 gi=i;
 if size(i,3)==3 %if image is rgb
@@ -37,7 +49,7 @@ mserRegions=i;
 
 if(size(mserStats,2)>0)
 bbox = vertcat(mserStats.BoundingBox);
-printboxes(bbox,ei,'original bbox');
+printboxes(bbox,ei,'original bbox',1);
 endif
 
 
@@ -49,7 +61,7 @@ endif
 %printing bounding boxes around selected regions
 if(size(mserStats,2)>0)
 bbox = vertcat(mserStats.BoundingBox);
-printboxes(bbox,ei,'After removeOnGeometry');
+printboxes(bbox,ei,'After removeOnGeometry',1);
 endif
 
 
@@ -88,7 +100,7 @@ endif
 
 %word boxes are numbered in increasing order of vertical distance only
 %but they may be ordered like actual text.i.e, top to bottom and left to right
-bboxswt=orderBoxPlace(bboxswt,25);
+bboxswt=orderBoxPlace(bboxswt,50);
 
 
 %expanding vertically to include dots of i and j and
@@ -97,7 +109,7 @@ bboxswt=orderBoxPlace(bboxswt,25);
 if(size(bboxswt,1)>0)
 	bboxswt=expandAndMergeBoundBox(bboxswt,i,0,0.12);
 
-printboxes(bboxswt,i,'final image after swt');
+printboxes(bboxswt,i,'final image after swt',1);
 link1to2(bboxswt,i);
 
 else

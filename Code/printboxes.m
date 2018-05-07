@@ -1,4 +1,4 @@
-function printboxes(bbox,i,Title)
+function printboxes(bbox,i,Title,wantText)
 figure
 imshow(i)
 title(Title);
@@ -33,7 +33,11 @@ expandedBBoxes=bbox;%bounds2dimensions(bbox,i);
 for i=1:size(expandedBBoxes,1)
 	
 rectangle('position',expandedBBoxes(i,:),'edgecolor','r','LineWidth',3);
-text(expandedBBoxes(i,1),expandedBBoxes(i,2),num2str(i),'Color','g','FontSize',14);
+if wantText==1
+	text(expandedBBoxes(i,1),expandedBBoxes(i,2),num2str(i),'Color','g','FontSize',14);
 end
+end
+
+
 end
 end

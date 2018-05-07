@@ -11,9 +11,9 @@ wordBox=expandAndMergeBoundBox(bbox,i,0.3,0);
 
 %word boxes are numbered in increasing order of vertical distance only
 %but they may be ordered like actual text.i.e, top to bottom and left to right
-printboxes(wordBox,i,'Before Box Rearranging');
+printboxes(wordBox,i,'Before Box Rearranging',1);
 wordBox=orderBoxPlace(wordBox,20);
-printboxes(wordBox,i,'After Box Rearranging');
+printboxes(wordBox,i,'After Box Rearranging',1);
 
 
 %now these big boxes are generally words
@@ -31,6 +31,8 @@ arrInd=1;
 addpath('E:\Photo OCR\Project\Code\Stage2 Code');
 load('thetas.mat'); %loading thetas
 
+printboxes(wordBox,i,'Final Image',0);
+
 for word=1:size(charBoxArray,2)
 	charbox=charBoxArray{word};%getting dimension matrix of given word
 	charbox=dimensions2bounds(charbox);%converting to bounds
@@ -44,7 +46,9 @@ for word=1:size(charBoxArray,2)
 			im=imcrop(i,charbounds);
 			im=trim(im);%to trim the extra space around the character
 			%printboxes(charbounds,i,'After Box Rearranging');
-			ans=[ans,stage2(im,Theta1, Theta2)];
+			detectedChar=stage2(im,Theta1, Theta2);
+			ans=[ans,detectedChar];
+			text(charbounds(:,1),charbounds(:,2),detectedChar,'Color','b','FontSize',30);
 			
 		endfor
 		answer{arrInd}=ans;
@@ -55,11 +59,12 @@ for word=1:size(charBoxArray,2)
 endfor
 
 
-%clc
+clc
 
-answer
+%answer
 
-
+%printboxes(wordBox,i,'Final Image',0);
+%text(wordBox(:,1),wordBox(:,2),answer,'Color','b','FontSize',30);
 
 
 j=0;

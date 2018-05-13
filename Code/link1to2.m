@@ -28,7 +28,9 @@ answer={};
 arrInd=1;
 
 
-addpath('E:\Photo OCR\Project\Code\Stage2 Code');
+addpath(strcat(pwd,'\Stage2 Code'));
+	%pwd gives current directory and above command make 
+	%child directory accessible
 load('thetas.mat'); %loading thetas
 
 printboxes(wordBox,i,'Final Image',0);

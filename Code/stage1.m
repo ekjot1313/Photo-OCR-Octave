@@ -1,16 +1,10 @@
 
-% Create push button
-    btn = uicontrol('Style', 'pushbutton', 'String', 'YOYO',...
-        'Position', [0 0 50 20],...
-        'Callback', 'cla');
-fffff
-[imgname, imgpath]=uigetfile ({"*.jpeg,*.png;*.jpg", "Supported Picture Formats"},'Select Image');
+[imgname, imgpath]=uigetfile ({"*.jpeg;*.png;*.jpg", "Supported Picture Formats"},'Select Image');
 %i=imread('E:\Photo OCR\Project\Code\Sample Images\abcd1.jpg'); % reads given image in rgb form
 i=imread(strcat(imgpath,imgname)); % reads given image in rgb form
 
 imshow(i);
-
-       ffff
+      
 %i=imcomplement(i);
 trim(i);
 gi=i;

@@ -1,9 +1,4 @@
-
-[imgname, imgpath]=uigetfile ({"*.jpeg;*.png;*.jpg", "Supported Picture Formats"},'Select Image');
-%i=imread('E:\Photo OCR\Project\Code\Sample Images\abcd1.jpg'); % reads given image in rgb form
-i=imread(strcat(imgpath,imgname)); % reads given image in rgb form
-
-imshow(i);
+function stage1(i)
       
 %i=imcomplement(i);
 trim(i);
@@ -112,7 +107,7 @@ else
 end;
 	
 
-
+end;
 
 
 

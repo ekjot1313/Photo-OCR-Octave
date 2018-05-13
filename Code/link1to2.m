@@ -1,4 +1,4 @@
-function link1to2(bbox,i)
+function link1to2(bbox,i,progress)
 
 
 %coming bbox are of all segmented characters 
@@ -31,11 +31,19 @@ arrInd=1;
 addpath('..\Stage2 Code');
 	%pwd gives current directory and above command make 
 	%child directory accessible
-load('thetas.mat'); %loading thetas
+	load('thetas.mat'); %loading thetas
+
+
 
 printboxes(wordBox,i,'Final Image',0);
 
+waitbar(0.85,progress,'Feding to Neural Network');
+
+progressPercent=0.85;
+
 for word=1:size(charBoxArray,2)
+
+	
 	charbox=charBoxArray{word};%getting dimension matrix of given word
 	charbox=dimensions2bounds(charbox);%converting to bounds
 
@@ -56,6 +64,11 @@ for word=1:size(charBoxArray,2)
 		answer{arrInd}=ans;
 		arrInd=arrInd+1;
 	endif
+
+
+	progressPercent=progressPercent+ 0.14/size(charBoxArray,2);
+	waitbar(progressPercent,progress);
+
 	
 
 endfor

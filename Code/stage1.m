@@ -9,7 +9,7 @@ waitbar(0,progress,'Reading Image...');
       imgpath=get(selectedImgEdit,'string');
       i=imread(imgpath);
 %i=imcomplement(i);
-waitbar(0.02,progress,'Trimming Image...');
+waitbar(0.5,progress,'Trimming Image...');
 trim(i);
 gi=i;
 if size(i,3)==3 %if image is rgb
@@ -20,7 +20,7 @@ endif;
 
 
 
-waitbar(0.05,progress,'Getting Edged Image...');
+waitbar(0.15,progress,'Getting Edged Image...');
 
 
 %preprocessing image before recognition
@@ -48,7 +48,7 @@ cc = bwconncomp (ei);
 mserStats = regionprops(cc,'all');
 mserRegions=i;
 
-waitbar(0.1,progress,'Scanning All Characters...');
+waitbar(0.25,progress,'Scanning All Characters...');
 
 if(size(mserStats,2)>0)
 bbox = vertcat(mserStats.BoundingBox);
@@ -57,7 +57,7 @@ endif
 
 
 
-waitbar(0.15,progress,'Removing Based on Geometry...');
+waitbar(0.40,progress,'Removing Based on Geometry...');
 % Remove Non-Text Regions Based On Basic Geometric Properties
 [mserRegions mserStats]=removeOnGeometry(mserRegions,mserStats,ei);
 
@@ -90,7 +90,7 @@ endif
 %link1to2(bbox,i);
 
 
-waitbar(0.30,progress,'Removing Based on SWT...');
+waitbar(0.55,progress,'Removing Based on SWT...');
 
 %Remove Non-Text Regions Based On Stroke Width Variation coded by me
 bboxNum=size(bbox,1);
@@ -116,9 +116,9 @@ if(size(bboxswt,1)>0)
 
 printboxes(bboxswt,i,'final image after swt',1);
 
-waitbar(0.60,progress,'Feding to Neural Network...');
+waitbar(0.75,progress,'Loading Theta/Weights...');
 
-link1to2(bboxswt,i);
+link1to2(bboxswt,i,progress);
 
 waitbar(1,progress,'Complete');
 

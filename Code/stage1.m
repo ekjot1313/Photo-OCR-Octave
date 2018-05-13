@@ -1,15 +1,19 @@
-function stage1(source,event,selectedImgEdit,progress)
+function stage1(source,event,selectedImgEdit)
 
 
 set(source,'visible','off');
 
-set(progress,'visible','on');
-waitbar(0,progress,'Reading Image...');
+
+% adding a waitbar
+	progress=waitbar(0.01,'Reading Image...',...
+					'name','Recognizing Characters',...
+					'CreateCancelBtn',@stopRecognizing);
+
 
       imgpath=get(selectedImgEdit,'string');
       i=imread(imgpath);
 %i=imcomplement(i);
-waitbar(0.5,progress,'Trimming Image...');
+waitbar(0.05,progress,'Trimming Image...');
 trim(i);
 gi=i;
 if size(i,3)==3 %if image is rgb

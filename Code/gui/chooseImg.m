@@ -1,18 +1,28 @@
-function chooseImg(source,event,slectedImgEdit)
+function chooseImg(source,event,slectedImgEdit,imgPanel)
 % this function helps to select image
 
 
+% open a file chooser and return image path and image name
 [imgname, imgpath]=uigetfile ({"*.jpeg;*.png;*.jpg",...
                              "Supported Picture Formats"},'Select Image');
-% open a file chooser and return image path and image name
 
-absimgpath=strcat(imgpath,imgname);
 % absolute image path
+absimgpath=strcat(imgpath,imgname);
 
-set(slectedImgEdit,'string',absimgpath);
 % update slectedImgEdit with the absolute image path
+set(slectedImgEdit,'string',absimgpath);
 
-i=imread(absimgpath);
 % reads given image in rgb form
+i=imread(absimgpath);
+
+
+pos=get(imgPanel,'position');
+
+iresize=i;%imresize(i,pos);
+
+
+set(imgPanel,'userdata',iresize);
+
+
 
 end;

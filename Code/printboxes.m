@@ -1,5 +1,9 @@
 function printboxes(bbox,i,Title,wantText)
-figure
+%figure
+
+%clear last image
+cla('reset');
+
 imshow(i)
 title(Title);
 

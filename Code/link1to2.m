@@ -28,7 +28,7 @@ answer={};
 arrInd=1;
 
 
-addpath(strcat(pwd,'\Stage2 Code'));
+addpath('..\Stage2 Code');
 	%pwd gives current directory and above command make 
 	%child directory accessible
 load('thetas.mat'); %loading thetas
